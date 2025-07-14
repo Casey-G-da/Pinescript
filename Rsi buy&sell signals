@@ -1,0 +1,39 @@
+// This Pine Script™ code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © Casey-G
+
+
+//@version=5
+indicator("RSI, MFI, StochRSI Signal", overlay=false)
+
+// Input parameters
+rsiLength = input(14, title="RSI Length")
+mfiLength = input(14, title="MFI Length")
+stochRsiLength = input(14, title="Stochastic RSI Length")
+stochRsiKLength = input(3, title="Stoch RSI %K Length")
+stochRsiDLength = input(3, title="Stoch RSI %D Length")
+
+// Calculate indicators
+rsi = ta.rsi(close, rsiLength)
+mfi = ta.mfi(close, mfiLength)
+stochRsi = ta.stoch(rsi, rsi, rsi, stochRsiLength)
+
+// Buy and Sell signals
+buySignal = (rsi < 30) and (mfi < 25) and (stochRsi < 20)
+sellSignal = (rsi > 70) and (mfi > 80) and (stochRsi > 80)
+
+// Plot signals
+plotshape(series=buySignal, title="Buy Signal", location=location.belowbar, color=color.green, style=shape.labelup, text="BUY")
+plotshape(series=sellSignal, title="Sell Signal", location=location.abovebar, color=color.red, style=shape.labeldown, text="SELL")
+
+// Plot indicators on separate panels for visualization
+plot(rsi, title="RSI", color=color.blue, linewidth=2)
+plot(mfi, title="MFI", color=color.orange, linewidth=2)
+plot(stochRsi, title="StochRSI", color=color.purple, linewidth=2)
+
+// Overbought and Oversold levels
+hline(70, "RSI Overbought", color=color.red)
+hline(30, "RSI Oversold", color=color.green)
+hline(80, "MFI Overbought", color=color.red)
+hline(20, "MFI Oversold", color=color.green)
+hline(80, "StochRSI Overbought", color=color.red)
+hline(20, "StochRSI Oversold", color=color.green)
